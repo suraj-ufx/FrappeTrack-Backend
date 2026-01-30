@@ -42,31 +42,14 @@ def get_timesheet_by_task(task_id: str):
         return {"status": "error", "message": str(e)}
 
 
-# @frappe.whitelist(allow_guest=False)
-# def create_timesheet(employee: str, parent_project: str):
-#     try:
-#         ts = frappe.new_doc("Timesheet")
-#         ts.employee = employee
-#         ts.parent_project = parent_project
-
-#         ts.insert(ignore_permissions=True)
-#         frappe.db.commit()
-
-#         return {
-#             "status": "success",
-#             "timesheet": ts.name
-#         }
-
-#     except Exception as e:
-#         frappe.log_error(frappe.get_traceback(), "Create Timesheet API Error")
-#         return {
-#             "status": "error",
-#             "message": str(e)
-#         }
-
-
 @frappe.whitelist(allow_guest=False)
-def create_timesheet(employee: str, parent_project: str, activity_type: str):
+def create_timesheet(
+    employee: str,
+    parent_project: str,
+    activity_type: str,
+    taskByProject: str,
+    descriptionStore: str,
+):
     try:
         ts = frappe.new_doc("Timesheet")
         ts.employee = employee
@@ -82,6 +65,9 @@ def create_timesheet(employee: str, parent_project: str, activity_type: str):
                 "to_time": frappe.utils.now_datetime(),
                 "hours": 0,
                 "project": parent_project,
+                "task": taskByProject,
+                "description": descriptionStore,
+                "completed":1
             },
         )
 
@@ -130,9 +116,9 @@ def add_time_log(timesheet, time_log):
 
         # Set parent project
         ts.parent_project = time_log.get("project")
-        print(f"logs:, {timesheet}")
+        print(f"logs:, {time_log.get("hours"), time_log.get("completed")}")
         # Append time log
-        ts.append(
+        row = ts.append(
             "time_logs",
             {
                 "activity_type": time_log.get("activity_type"),
@@ -151,6 +137,13 @@ def add_time_log(timesheet, time_log):
         )
 
         ts.save(ignore_permissions=True)
+        frappe.db.set_value(
+            "Timesheet Detail",
+            row.name,
+            "hours",
+            time_log.get("hours"),
+            update_modified=False
+        )        
         frappe.db.commit()
 
         return {
