@@ -20,6 +20,7 @@ def login_with_email(email: str, password: str):
         login_manager = frappe.auth.LoginManager()
         login_manager.authenticate(user=user, pwd=password)
         login_manager.post_login()
+        
     except frappe.AuthenticationError:
         frappe.throw(_("Invalid email or password"), frappe.AuthenticationError)
 
@@ -30,6 +31,18 @@ def login_with_email(email: str, password: str):
         "user": frappe.session.user
     }
 
+
+@frappe.whitelist(allow_guest=False)
+def logout_user():
+    """
+        Logs out user.
+        removes the session, sids from cookie
+    """
+    try:
+        login_manager = frappe.auth.LoginManager()
+        login_manager.logout()
+    except frappe.AuthenticationError:
+        frappe.throw(_("Invalid user", frappe.AuthenticationError))
 
 @frappe.whitelist()
 def get_employee_profile():
