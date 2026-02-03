@@ -54,7 +54,7 @@ def create_timesheet(
         ts = frappe.new_doc("Timesheet")
         ts.employee = employee
         ts.parent_project = parent_project
-        ts.title = ""
+        # ts.title = ""
 
         print(f"logs: {employee}: {activity_type}: {parent_project}")
         # REQUIRED: add at least one time log
@@ -74,7 +74,7 @@ def create_timesheet(
 
         ts.insert(ignore_permissions=True)
         frappe.db.commit()
-        ts.save()
+        
 
         return {"status": "success", "timesheet": ts.name}
 
