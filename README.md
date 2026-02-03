@@ -39,6 +39,7 @@ FrappeTrack is designed for teams and organizations that use ERPNext and need a 
 
 1. Authentication & User
     - [X] POST /auth/login – Login API
+    - [X] POST /auth/logout - Logout API 
     - [X] GET /user/profile – Get Profile API
 
 2. Project Management
@@ -47,4 +48,5 @@ FrappeTrack is designed for teams and organizations that use ERPNext and need a 
 
 3. Task & Productivity
     - [X] GET/POST /tasks – Task API
-    - [ ] POST /timetracker – Timetracker API (In Progress)
+    - [X] GET /activity - Activity API  
+    - [X] POST /timetracker – Timetracker API
