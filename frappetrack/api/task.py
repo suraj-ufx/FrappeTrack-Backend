@@ -75,9 +75,19 @@ def get_task_by_project(project_id: str):
 
 
 @frappe.whitelist(allow_guest=False)
-def create_task(project_id: str, subject: str, priority: str):
+def create_task(project: str, subject: str, priority: str):
     try:
-        pass
+        new_doc = frappe.new_doc("Task")
+
+        new_doc.project = project
+        new_doc.subject = subject
+        new_doc.priority = priority
+
+        new_doc.insert(ignore_permissions=True)
+        frappe.db.commit()
+        new_doc.save()
+
+        return {"status": "success", "Task": new_doc}
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "create_task failed")
