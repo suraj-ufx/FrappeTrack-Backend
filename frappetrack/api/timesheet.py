@@ -119,7 +119,7 @@ def add_time_log(timesheet, time_log):
 
         # Set parent project
         ts.parent_project = time_log.get("project")
-        print(f"logs:, {time_log.get("hours"), time_log.get("completed")}")
+        # print(f"logs:, {time_log.get("hours"), time_log.get("completed")}")
         # Append time log
         row = ts.append(
             "time_logs",
