@@ -73,6 +73,7 @@ def create_timesheet(
         )
 
         ts.insert(ignore_permissions=True)
+        ts.db_set("title", ts.name)
         frappe.db.commit()
         
 
