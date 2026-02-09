@@ -38,3 +38,30 @@ FrappeTrack is designed for teams and organizations that use ERPNext and need a 
 3. More ui Image (Coming Soon)
 
 ---
+## Features
+
+### Authentication & User Management
+- **User Login**  
+  Secure authentication using `POST /user/login_with_email`.
+- **User Logout**  
+  Session or token invalidation via `POST /user/logout_user`.
+- **User Profile**  
+  Retrieve logged-in user details using `GET /user/get_employee_profile`.
+
+---
+
+### Project Management
+- **List Projects**  
+  Create new projects and fetch all projects using `GET /get_projects_list`.
+- **Project-wise Tasks**  
+  Retrieve all tasks associated with a specific project using  
+  `GET /get_task_by_project/{id}/`.
+
+---
+
+### Task & Productivity Tracking
+- **Task Management**  
+  Create and retrieve tasks using `GET /get_task_list` and `POST /create_task`.
+- **Time Tracking**  
+  Track time spent on tasks using create timesheet `POST /create_timesheet` 
+  and add time log `POST /add_time_log`.
