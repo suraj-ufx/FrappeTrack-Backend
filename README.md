@@ -27,26 +27,14 @@ FrappeTrack is designed for teams and organizations that use ERPNext and need a 
 
 ![FrappeTrack Login](Frappe%20Tracker/loginui.png)
 
-2. Main Screen
+2. Profile Page
+
+![FrappeTrack Login](Frappe%20Tracker/Profile.png)
+
+3. Main Screen
 
 ![FrappeTrack Login](Frappe%20Tracker/Timetracker.png)
 
 3. More ui Image (Coming Soon)
 
 ---
-
-## 🚀 API Development Progress
-
-1. Authentication & User
-    - [X] POST /auth/login – Login API
-    - [X] POST /auth/logout - Logout API 
-    - [X] GET /user/profile – Get Profile API
-
-2. Project Management
-    - [X] GET/POST /projects – Project API
-    - [X] GET /projects/{id}/tasks – Get Task by project ID
-
-3. Task & Productivity
-    - [X] GET/POST /tasks – Task API
-    - [X] GET /activity - Activity API  
-    - [X] POST /timetracker – Timetracker API
