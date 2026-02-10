@@ -48,7 +48,7 @@ def get_task_by_project(project_id: str):
             fields=["name", "subject", "status"],
             filters={
                 "project": project_id,
-                "status": "Open"
+                "status": ["not in", ["Completed", "Template", "Cancelled"]]
             }
         )
 
