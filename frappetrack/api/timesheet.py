@@ -54,7 +54,6 @@ def create_timesheet(
         ts = frappe.new_doc("Timesheet")
         ts.employee = employee
         ts.parent_project = parent_project
-        # ts.title = ""
 
         print(f"logs: {employee}: {activity_type}: {parent_project}")
         # REQUIRED: add at least one time log
@@ -73,7 +72,6 @@ def create_timesheet(
         )
 
         ts.insert(ignore_permissions=True)
-        ts.db_set("title", ts.name)
         frappe.db.commit()
         
 
@@ -162,14 +160,23 @@ def add_time_log(timesheet, time_log):
 
 
 @frappe.whitelist(allow_guest=False)
-def upload_screenshot(file_name: str, file_data: str, timesheet_id: str):
+def upload_screenshot(file_name: str, file_data: str, mime_type: str, timesheet_id: str):
     try:
-        # Decode base64 data
         content = base64.b64decode(file_data)
+    
+        # map mime → extension
+        ext_map = {
+            "image/png": ".png",
+            "image/jpeg": ".jpg",
+            "image/jpg": ".jpg",
+        }
 
-        # Save file in File DocType & attach to Timesheet
+        extension = ext_map.get(mime_type, "")
+
+        full_name = f"{file_name}{extension}"
+
         file_doc = save_file(
-            fname=file_name,
+            fname=full_name,
             content=content,
             dt="Timesheet",
             dn=timesheet_id,
@@ -178,13 +185,14 @@ def upload_screenshot(file_name: str, file_data: str, timesheet_id: str):
 
         return {
             "status": "success",
-            "message": "Screenshot uploaded successfully",
             "file_name": file_doc.file_name,
             "file_url": file_doc.file_url,
             "file_id": file_doc.name,
         }
-    except Exception as e:
+
+    except Exception:
         frappe.log_error(
-            title="Upload Screenshot Error", message=frappe.get_traceback()
+            title="Upload Screenshot Error",
+            message=frappe.get_traceback(),
         )
-        return {"status": "error", "message": str(e)}
+        return {"status": "error"}
