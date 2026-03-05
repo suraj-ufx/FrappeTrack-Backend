@@ -66,7 +66,7 @@ def create_timesheet(employee: str, parent_project: str, activity_type: str, tas
         )
 
         ts.insert(ignore_permissions=True)
-        ts.db_set("title", ts.name)
+        # ts.db_set("title", ts.name)
         frappe.db.commit()
 
         # ✅ Return full object for frontend dropdown
