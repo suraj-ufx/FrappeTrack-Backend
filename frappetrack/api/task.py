@@ -78,16 +78,21 @@ def get_task_by_project(project_id: str):
 def create_task(project: str, subject: str, priority: str):
     try:
         new_doc = frappe.new_doc("Task")
-
         new_doc.project = project
         new_doc.subject = subject
         new_doc.priority = priority
 
         new_doc.insert(ignore_permissions=True)
         frappe.db.commit()
-        new_doc.save()
 
-        return {"status": "success", "Task": new_doc}
+        return {
+            "status": "success",
+            "data": {
+                "name": new_doc.name,
+                "subject": new_doc.subject,
+                "status": new_doc.status
+            }
+        }
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "create_task failed")
@@ -95,3 +100,24 @@ def create_task(project: str, subject: str, priority: str):
             "status": "failed",
             "message": str(e)
         }
+# @frappe.whitelist(allow_guest=False)
+# def create_task(project: str, subject: str, priority: str):
+#     try:
+#         new_doc = frappe.new_doc("Task")
+
+#         new_doc.project = project
+#         new_doc.subject = subject
+#         new_doc.priority = priority
+
+#         new_doc.insert(ignore_permissions=True)
+#         frappe.db.commit()
+#         new_doc.save()
+
+#         return {"status": "success", "Task": new_doc}
+
+#     except Exception as e:
+#         frappe.log_error(frappe.get_traceback(), "create_task failed")
+#         return {
+#             "status": "failed",
+#             "message": str(e)
+#         }

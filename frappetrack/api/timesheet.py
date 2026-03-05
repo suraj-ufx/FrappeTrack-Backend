@@ -42,20 +42,14 @@ def get_timesheet_by_task(task_id: str):
         return {"status": "error", "message": str(e)}
 
 
+
 @frappe.whitelist(allow_guest=False)
-def create_timesheet(
-    employee: str,
-    parent_project: str,
-    activity_type: str,
-    taskByProject: str,
-    descriptionStore: str,
-):
+def create_timesheet(employee: str, parent_project: str, activity_type: str, taskByProject: str, descriptionStore: str):
     try:
         ts = frappe.new_doc("Timesheet")
         ts.employee = employee
         ts.parent_project = parent_project
 
-        print(f"logs: {employee}: {activity_type}: {parent_project}")
         # REQUIRED: add at least one time log
         ts.append(
             "time_logs",
@@ -67,19 +61,69 @@ def create_timesheet(
                 "project": parent_project,
                 "task": taskByProject,
                 "description": descriptionStore,
-                "completed":1
+                "completed": 1
             },
         )
 
         ts.insert(ignore_permissions=True)
+        ts.db_set("title", ts.name)
         frappe.db.commit()
-        
 
-        return {"status": "success", "timesheet": ts.name}
+        # ✅ Return full object for frontend dropdown
+        return {
+            "status": "success",
+            "data": {
+                "name": ts.name,
+                "title": ts.title,
+                "project": parent_project,
+                "task": taskByProject,
+                "activity_type": activity_type
+            }
+        }
 
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "Create Timesheet API Error")
         return {"status": "error", "message": str(e)}
+    
+    
+# @frappe.whitelist(allow_guest=False)
+# def create_timesheet(
+#     employee: str,
+#     parent_project: str,
+#     activity_type: str,
+#     taskByProject: str,
+#     descriptionStore: str,
+# ):
+#     try:
+#         ts = frappe.new_doc("Timesheet")
+#         ts.employee = employee
+#         ts.parent_project = parent_project
+
+#         print(f"logs: {employee}: {activity_type}: {parent_project}")
+#         # REQUIRED: add at least one time log
+#         ts.append(
+#             "time_logs",
+#             {
+#                 "activity_type": activity_type,
+#                 "from_time": frappe.utils.now_datetime(),
+#                 "to_time": frappe.utils.now_datetime(),
+#                 "hours": 0,
+#                 "project": parent_project,
+#                 "task": taskByProject,
+#                 "description": descriptionStore,
+#                 "completed":1
+#             },
+#         )
+
+#         ts.insert(ignore_permissions=True)
+#         frappe.db.commit()
+        
+
+#         return {"status": "success", "timesheet": ts.name}
+
+#     except Exception as e:
+#         frappe.log_error(frappe.get_traceback(), "Create Timesheet API Error")
+#         return {"status": "error", "message": str(e)}
 
 
 @frappe.whitelist(allow_guest=False)
