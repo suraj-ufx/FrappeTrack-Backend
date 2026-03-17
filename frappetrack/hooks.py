@@ -137,13 +137,11 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Timesheet": {
+        "before_submit": "frappetrack.api.timesheet.clean_time_logs_before_submit"
+    }
+}
 
 # Scheduled Tasks
 # ---------------

@@ -2,7 +2,7 @@ import frappe
 from frappe import _
 import base64
 from frappe.utils.file_manager import save_file
-
+from frappe.utils import flt
 
 @frappe.whitelist(allow_guest=False)
 def get_timesheet_by_task(task_id: str):
@@ -240,3 +240,29 @@ def upload_screenshot(file_name: str, file_data: str, mime_type: str, timesheet_
             message=frappe.get_traceback(),
         )
         return {"status": "error"}
+    
+def clean_time_logs_before_submit(doc, method):
+    """
+    Remove invalid Time Logs (0 or None hours) before submitting Timesheet.
+    Ensures at least one valid log exists.
+    """
+    if not doc.time_logs:
+        frappe.throw("Timesheet cannot be submitted without Time Logs.")
+
+    valid_logs = []
+
+    for row in doc.time_logs:
+        hours = flt(row.hours)
+        if hours > 0:
+            valid_logs.append(row)
+
+    # Reassign filtered logs
+    doc.time_logs = valid_logs
+
+    # ✅ FIX: Reset idx (serial number)
+    for i, row in enumerate(doc.time_logs, start=1):
+        row.idx = i
+
+    # Safety check
+    if not doc.time_logs:
+        frappe.throw("Cannot submit Timesheet without valid Time Logs.")
